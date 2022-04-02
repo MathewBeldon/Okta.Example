@@ -5,18 +5,16 @@ import { Header, Icon, Table } from 'semantic-ui-react';
 const Profile = () => {
   const { authState, oktaAuth } = useOktaAuth();
   const [userInfo, setUserInfo] = useState(null);
-
   useEffect(() => {
     if (!authState || !authState.isAuthenticated) {
       // When user isn't authenticated, forget any user info
       setUserInfo(null);
     } else {
-      setUserInfo(authState.idToken.claims);
+      setUserInfo(authState.idToken);
       // You can also get user information from the `/userinfo` endpoint
       /*oktaAuth.getUser().then((info) => {
         setUserInfo(info);
       });*/
-      console.log(authState.accessToken);
 
     }
   }, [authState, oktaAuth]); // Update if authState changes
@@ -50,6 +48,7 @@ const Profile = () => {
           {' '}
           component, which will ensure that this page cannot be accessed until you have authenticated.
         </p>
+        <p>{userInfo.idToken}</p>
         <Table>
           <thead>
             <tr>
@@ -58,15 +57,16 @@ const Profile = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(userInfo).map((claimEntry) => {
+            {Object.entries(userInfo.claims).map((claimEntry) => {
               const claimName = claimEntry[0];
               const claimValue = claimEntry[1];
               const claimId = `claim-${claimName}`;
               return (
+                
                 <tr key={claimName}>
                   <td>{claimName}</td>
                   <td id={claimId}>{claimValue.toString()}</td>
-                </tr>
+                </tr>          
               );
             })}
           </tbody>

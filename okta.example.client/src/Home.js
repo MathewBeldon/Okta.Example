@@ -15,7 +15,8 @@ export default withOktaAuth(class Home extends Component {
   }
 
   async logout() {
-    await this.props.oktaAuth.signOut();
+    const basename = window.location.origin;
+    await this.props.oktaAuth.signOut({ postLogoutRedirectUri: basename });
   }
 
   render() {
